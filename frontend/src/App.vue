@@ -4,7 +4,7 @@
     <h2>Cardiology Question Generator</h2>
     <h4>(in development)</h4>
     <br /><br />
-    <QuizApp :apiUrl="apiUrl" />
+    <QuizApp />
   </div>
 </template>
 
@@ -23,7 +23,7 @@ export default {
 #app {
   font-family: Arial, sans-serif;
   text-align: center;
-  color: #2c3e50;
+  color: black;
   margin-top: 60px;
 }
 </style>

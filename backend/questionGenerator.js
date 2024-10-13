@@ -1,14 +1,13 @@
 const { ChatOpenAI } = require('@langchain/openai');
 const { ChatPromptTemplate } = require('@langchain/core/prompts');
-const {
-  StringOutputParser,
-  JsonOutputParser // Ensure JsonOutputParser is available in your version of LangChain
-} = require('@langchain/core/output_parsers');
+const { JsonOutputParser } = require('@langchain/core/output_parsers');
 
 const dotenv = require('dotenv');
 dotenv.config();
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+//the main method that generates the quiz questions from LLM
 
 const generateQuestions = async (topic, numQuestions) => {
   console.log(`Generating ${numQuestions} quiz question(s) about ${topic}...`);
@@ -30,7 +29,7 @@ const generateQuestions = async (topic, numQuestions) => {
 
       -- The questions should be very clearly written in a language suited for a physician.
 
-      -- it is reasonable to add information to the question text that is not related to the question itself, but that is relevant to the topic.
+      --  add information to the question text that is not related to the question itself, but that is relevant to the topic.
       
       -- Each question should be in JSON format and have the following fields:
       
