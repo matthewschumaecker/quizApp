@@ -15,11 +15,6 @@ export default {
   name: 'App',
   components: {
     QuizApp
-  },
-  data() {
-    return {
-      apiUrl: 'https://your-api-endpoint.com/quiz' // Replace with your actual API endpoint
-    };
   }
 };
 </script>

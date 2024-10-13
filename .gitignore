@@ -1,2 +1,8 @@
-.env
-.vscode
+# Ignore environment variables in the backend
+/backend/.env
+
+# Ignore node_modules in the backend
+/backend/node_modules/
+
+# Ignore Visual Studio Code settings in the frontend
+/frontend/.vscode/

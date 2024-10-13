@@ -1,10 +1,10 @@
 <template>
   <div class="quiz-app">
-    <p class="question-text" v-if="currentQuestion">
+    <p class="question-text" v-if="!loading && currentQuestion">
       {{ currentQuestion.text }}
     </p>
 
-    <ul class="options-list" v-if="currentQuestion">
+    <ul class="options-list" v-if="!loading && currentQuestion">
       <li
         v-for="(option, index) in currentQuestion.options"
         :key="index"
@@ -62,18 +62,24 @@ export default {
   },
   computed: {
     currentQuestion() {
-      return this.questions[this.currentQuestionIndex];
+      if (this.questions.length > 0) {
+        //console.log(this.questions[0].text);
+        return this.questions[this.currentQuestionIndex];
+      }
     },
+
     resultMessage() {
       return this.selectedOption === this.currentQuestion.correctAnswer
         ? 'Correct'
         : 'Incorrect';
     },
+
     resultClass() {
       return this.selectedOption === this.currentQuestion.correctAnswer
         ? 'correct'
         : 'incorrect';
     },
+
     isLastQuestion() {
       return this.currentQuestionIndex === this.questions.length - 1;
     }
@@ -96,20 +102,26 @@ export default {
       this.selectedOption = null;
       this.showResult = false;
     },
-    async fetchQuestion() {
+
+    // Fetches questions from the server
+    async fetchQuestions() {
       try {
         this.loading = true;
-        const response = await axios.get(
-          'http://localhost:3000/api/generateQuestion',
-          {
-            params: {
-              topic: 'cardiac genetics',
-              numQuestions: 5
-            }
-          }
-        );
-        this.questions.push(response.data);
-        console.log(response.data);
+
+        const url = 'http://localhost:3000/api/generateQuestion';
+        const params = {
+          topic: 'drugs in heart failure',
+          numQuestions: 2
+        };
+
+        const queryString = new URLSearchParams(params).toString();
+        const fullUrl = `${url}?${queryString}`;
+        console.log(`Requesting URL: ${fullUrl}`);
+
+        const response = await axios.get(fullUrl);
+
+        this.questions = response.data;
+        //console.log(response.data);
       } catch (error) {
         this.error = 'Failed to load questions';
         console.error(error);
@@ -119,7 +131,7 @@ export default {
     }
   },
   created() {
-    this.fetchQuestion(); // Fetch question(s) when the component is created
+    this.fetchQuestions(); // Fetch question(s) when the component is created
   }
 };
 </script>
