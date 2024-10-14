@@ -8,16 +8,17 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-console.log(process.env.MONGODB_URL);
 app.use(cors());
 app.use(express.json());
 
-const uri =
-  'mongodb+srv://schumaecker:asdlkjcn@question-generator.w9s6z.mongodb.net/?retryWrites=true&w=majority&appName=question-generator';
-const client = new MongoClient(uri);
+const PORT = process.env.PORT || 3000;
+const MONGODB_URL = process.env.MONGODB_URL;
 
-let db;
+console.log('MONGODB_URL:', MONGODB_URL);
+
+const client = new MongoClient(MONGODB_URL);
+
+let db; //MongoDB operator that can access variables defined outside of its expression block
 
 async function connectToDatabase() {
   try {
