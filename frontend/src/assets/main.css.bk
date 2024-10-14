@@ -1,6 +1,31 @@
+#app {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: #2c3e50;
+  margin: 20px auto;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
 quiz-app,
 question-generation {
   font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
 .options-list {
@@ -20,11 +45,6 @@ question-generation {
   background-color: #d3d3d3;
 }
 
-button {
-  margin-top: 20px;
-}
-
-/* make it so incorrect red and correct blue */
 .result {
   font: 1.3em sans-serif;
   margin-top: 20px;
@@ -60,29 +80,11 @@ button {
   padding: 10px;
   margin-bottom: 35px;
 }
+
 .explanation {
   margin-top: 10px;
   padding: 10px;
   text-align: left;
-}
-#app {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-  margin: 20px auto;
-  max-width: 800px;
-  padding: 0 20px;
-}
-
-h1 {
-  font-size: 2em;
-  margin-bottom: 10px;
-}
-
-.development-notice {
-  font-style: italic;
-  color: #666;
-  margin-bottom: 20px;
 }
 
 .nav-buttons {

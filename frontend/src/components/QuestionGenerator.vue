@@ -1,58 +1,83 @@
 <template>
-  <div class="question-generation">
-    <h2>Question Generation</h2>
+  <div class="question-generation container mt-5">
+    <h2 class="mb-4 text-center">Question Generation</h2>
 
-    <div class="topic-input">
-      <label for="topic">Enter Topic:</label>
-      <input id="topic" v-model="topic" />
+    <div class="mb-3">
+      <label for="topic" class="form-label">Enter Topic:</label>
+      <input id="topic" v-model="topic" class="form-control" />
     </div>
 
-    <button @click="generateNewQuestion" :disabled="loading || !topic">
+    <button
+      @click="generateNewQuestion"
+      :disabled="loading || !topic"
+      class="btn btn-primary mb-4"
+    >
       Generate New Question
     </button>
 
-    <div v-if="currentQuestion">
-      <h3>Current Question:</h3>
-      <p class="question-text">{{ currentQuestion.text }}</p>
-      <ul class="options-list">
-        <li v-for="(option, index) in currentQuestion.options" :key="index">
-          {{ option }}
-        </li>
-      </ul>
-      <p>
-        <strong>Correct Answer:</strong>
-        {{ currentQuestion.options[currentQuestion.correctAnswer] }}
-      </p>
-      <p class="explanation">{{ currentQuestion.explanation }}</p>
+    <div v-if="currentQuestion" class="card mb-4">
+      <div class="card-body">
+        <h3 class="card-title">Current Question:</h3>
+        <p class="card-text">{{ currentQuestion.text }}</p>
+        <ul class="list-group mb-3">
+          <li
+            v-for="(option, index) in currentQuestion.options"
+            :key="index"
+            class="list-group-item"
+          >
+            {{ option }}
+          </li>
+        </ul>
+        <p class="card-text">
+          <strong>Correct Answer:</strong>
+          {{ currentQuestion.options[currentQuestion.correctAnswer] }}
+        </p>
+        <p class="card-text">
+          <strong>Explanation:</strong> {{ currentQuestion.explanation }}
+        </p>
+      </div>
     </div>
 
-    <div v-if="currentQuestion">
+    <div v-if="currentQuestion" class="mb-4">
       <h3>Feedback:</h3>
       <textarea
         v-model="feedback"
         rows="4"
-        cols="50"
+        class="form-control mb-3"
         placeholder="Instructions to reformulate question..."
       ></textarea>
-      <br />
-      <button @click="requestChanges">Request Changes</button>
-      <button @click="submitToDatabase">Submit to Database</button>
+      <div class="d-grid gap-2 d-md-block">
+        <button @click="requestChanges" class="btn btn-secondary me-md-2">
+          Request Changes
+        </button>
+        <button @click="submitToDatabase" class="btn btn-success">
+          Submit to Database
+        </button>
+      </div>
     </div>
 
-    <p v-if="loading">Generating question...</p>
-    <p v-if="error" class="error">{{ error }}</p>
+    <div v-if="loading" class="d-flex justify-content-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <p v-if="error" class="alert alert-danger">{{ error }}</p>
 
-    <!-- New section for editable JSON -->
-    <div v-if="currentQuestion" class="json-edit">
+    <div v-if="currentQuestion" class="mb-4">
       <h4>Edit Question JSON:</h4>
       <textarea
         v-model="editableJson"
         rows="10"
-        class="json-textarea"
+        class="form-control mb-3"
       ></textarea>
-      <br />
-      <button @click="updateQuestionFromJson">Update Question</button>
-      <button @click="submitJsonToDatabase">Submit JSON to Database</button>
+      <div class="d-grid gap-2 d-md-block">
+        <button @click="updateQuestionFromJson" class="btn btn-info me-md-2">
+          Update Question
+        </button>
+        <button @click="submitJsonToDatabase" class="btn btn-success">
+          Submit JSON to Database
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -123,7 +148,7 @@ export default {
           }
         );
         currentQuestion.value = response.data;
-        editableJson.value = ''; // Clear editable JSON when question is modified
+        editableJson.value = '';
         feedback.value = '';
       } catch (err) {
         error.value = 'Failed to modify question';
@@ -213,7 +238,7 @@ export default {
   }
 };
 </script>
-
+<!-- 
 <style scoped>
 .question-generation {
   max-width: 800px;
@@ -265,4 +290,4 @@ button {
   overflow-wrap: break-word;
   resize: vertical;
 }
-</style>
+</style> -->
