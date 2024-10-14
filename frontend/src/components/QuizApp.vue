@@ -1,36 +1,48 @@
 <template>
   <div class="quiz-app">
-    <p class="question-text" v-if="!loading && currentQuestion">
-      {{ currentQuestion.text }}
+    <h2>Quiz App</h2>
+
+    <div class="input-container">
+      <div class="input-group">
+        <label for="topic">Topic:</label>
+        <input id="topic" v-model="topic" placeholder="Enter quiz topic" />
+      </div>
+      <div class="input-group">
+        <label for="numQuestions">Number of Questions:</label>
+        <input
+          id="numQuestions"
+          v-model.number="numQuestions"
+          type="number"
+          min="1"
+          max="10"
+        />
+      </div>
+      <button @click="startQuiz" :disabled="!topic || numQuestions < 1">
+        Start Quiz
+      </button>
+    </div>
+
+    <div v-if="currentQuestion" class="question-container">
+      <p class="question-text">{{ currentQuestion.text }}</p>
+      <ul class="options-list">
+        <li
+          v-for="(option, index) in currentQuestion.options"
+          :key="index"
+          :class="{ selected: selectedOption === index }"
+          @click="selectOption(index)"
+        >
+          {{ option }}
+        </li>
+      </ul>
+      <button @click="submitAnswer" :disabled="selectedOption === null">
+        Submit Answer
+      </button>
+    </div>
+
+    <p v-if="showResult" :class="resultClass">{{ resultMessage }}</p>
+    <p v-if="showResult" class="explanation">
+      {{ currentQuestion.explanation }}
     </p>
-
-    <ul class="options-list" v-if="!loading && currentQuestion">
-      <li
-        v-for="(option, index) in currentQuestion.options"
-        :key="index"
-        :class="{ selected: selectedOption === index }"
-        @click="selectOption(index)"
-      >
-        {{ option }}
-      </li>
-    </ul>
-
-    <button
-      v-if="currentQuestion"
-      @click="submitAnswer"
-      :disabled="selectedOption === null"
-    >
-      Submit
-    </button>
-
-    <p v-if="showResult" :class="resultClass" class="result">
-      {{ resultMessage }}
-    </p>
-    <p
-      class="explanation"
-      v-if="showResult"
-      v-html="currentQuestion.explanation"
-    ></p>
 
     <button v-if="showResult && !isLastQuestion" @click="nextQuestion">
       Next Question
@@ -40,167 +52,206 @@
       Your final score is: {{ score }}/{{ questions.length }}
     </p>
 
-    <p v-if="loading" class="loading">Loading questions...</p>
+    <p v-if="loading">Loading questions...</p>
     <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
 
 <script>
+import { ref, computed } from 'vue';
 import axios from 'axios';
 
 export default {
-  data() {
-    return {
-      questions: [],
-      currentQuestionIndex: 0,
-      selectedOption: null,
-      showResult: false,
-      score: 0,
-      loading: false,
-      error: null
-    };
-  },
-  computed: {
-    currentQuestion() {
-      if (this.questions.length > 0) {
-        //console.log(this.questions[0].text);
-        return this.questions[this.currentQuestionIndex];
-      }
-    },
+  name: 'QuizApp',
+  setup() {
+    const topic = ref('');
+    const numQuestions = ref(5); // Default to 5 questions
+    const questions = ref([]);
+    const currentQuestionIndex = ref(0);
+    const selectedOption = ref(null);
+    const showResult = ref(false);
+    const score = ref(0);
+    const loading = ref(false);
+    const error = ref(null);
 
-    resultMessage() {
-      return this.selectedOption === this.currentQuestion.correctAnswer
-        ? 'Correct'
-        : 'Incorrect';
-    },
-
-    resultClass() {
-      return this.selectedOption === this.currentQuestion.correctAnswer
+    const currentQuestion = computed(
+      () => questions.value[currentQuestionIndex.value]
+    );
+    const isLastQuestion = computed(
+      () => currentQuestionIndex.value === questions.value.length - 1
+    );
+    const resultMessage = computed(() =>
+      selectedOption.value === currentQuestion.value.correctAnswer
+        ? 'Correct!'
+        : 'Incorrect'
+    );
+    const resultClass = computed(() =>
+      selectedOption.value === currentQuestion.value.correctAnswer
         ? 'correct'
-        : 'incorrect';
-    },
+        : 'incorrect'
+    );
 
-    isLastQuestion() {
-      return this.currentQuestionIndex === this.questions.length - 1;
-    }
-  },
-  methods: {
-    selectOption(index) {
-      this.selectedOption = index;
-    },
-    submitAnswer() {
-      console.log(`User chose: ${this.selectedOption}`);
-      console.log(`Correct answer: ${this.currentQuestion.correctAnswer}`);
-      const correctAnswerIndex = Number(this.currentQuestion.correctAnswer);
-      if (this.selectedOption === correctAnswerIndex) {
-        this.score++;
-      }
-      this.showResult = true;
-    },
-    nextQuestion() {
-      this.currentQuestionIndex++;
-      this.selectedOption = null;
-      this.showResult = false;
-    },
+    const startQuiz = async () => {
+      if (!topic.value || numQuestions.value < 1) return;
 
-    // Fetches questions from the server
-    async fetchQuestions() {
       try {
-        this.loading = true;
-
-        const url = 'http://localhost:3000/api/generateQuestion';
-        const params = {
-          topic: 'drugs in heart failure',
-          numQuestions: 2
-        };
-
-        const queryString = new URLSearchParams(params).toString();
-        const fullUrl = `${url}?${queryString}`;
-        console.log(`Requesting URL: ${fullUrl}`);
-
-        const response = await axios.get(fullUrl);
-
-        this.questions = response.data;
-        //console.log(response.data);
-      } catch (error) {
-        this.error = 'Failed to load questions';
-        console.error(error);
+        loading.value = true;
+        error.value = null;
+        const response = await axios.get(
+          'http://localhost:3000/api/generateQuestion',
+          {
+            params: { topic: topic.value, numQuestions: numQuestions.value }
+          }
+        );
+        questions.value = response.data;
+        currentQuestionIndex.value = 0;
+        selectedOption.value = null;
+        showResult.value = false;
+        score.value = 0;
+      } catch (err) {
+        error.value = 'Failed to load questions';
+        console.error(err);
       } finally {
-        this.loading = false;
+        loading.value = false;
       }
-    }
-  },
-  created() {
-    this.fetchQuestions(); // Fetch question(s) when the component is created
+    };
+
+    const selectOption = (index) => {
+      selectedOption.value = index;
+    };
+
+    const submitAnswer = () => {
+      if (selectedOption.value === currentQuestion.value.correctAnswer) {
+        score.value++;
+      }
+      showResult.value = true;
+    };
+
+    const nextQuestion = () => {
+      currentQuestionIndex.value++;
+      selectedOption.value = null;
+      showResult.value = false;
+    };
+
+    return {
+      topic,
+      numQuestions,
+      questions,
+      currentQuestionIndex,
+      selectedOption,
+      showResult,
+      score,
+      loading,
+      error,
+      currentQuestion,
+      isLastQuestion,
+      resultMessage,
+      resultClass,
+      startQuiz,
+      selectOption,
+      submitAnswer,
+      nextQuestion
+    };
   }
 };
 </script>
 
 <style scoped>
 .quiz-app {
-  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 8px;
+  font-size: 16px;
+  width: 200px;
+  max-width: 100%;
+  text-align: center;
+}
+
+input[type='number'] {
+  width: 100px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+.question-container {
+  margin-top: 20px;
+}
+
+.question-text {
+  font-size: 18px;
+  margin-bottom: 15px;
 }
 
 .options-list {
   list-style-type: none;
   padding: 0;
-  text-align: left;
 }
 
 .options-list li {
   padding: 10px;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 5px;
   cursor: pointer;
 }
 
 .options-list li.selected {
-  background-color: #d3d3d3;
+  background-color: #e0e0e0;
 }
 
-button {
-  margin-top: 20px;
+.correct {
+  color: green;
 }
 
-/* make it so incorrect red and correct blue */
-.result {
-  font: 1.3em sans-serif;
-  margin-top: 20px;
-  font-weight: bold;
+.incorrect {
+  color: red;
 }
 
-.result.correct {
-  color: #2a0eb5; /* Blue for correct answers */
-}
-
-.result.incorrect {
-  color: #c92a3d; /* Red for incorrect answers */
+.explanation {
+  font-style: italic;
+  margin-top: 10px;
 }
 
 .final-score {
-  margin-top: 30px;
-  font-size: 1.2em;
-}
-
-.loading {
+  font-weight: bold;
+  font-size: 18px;
   margin-top: 20px;
-  font-size: 1.2em;
 }
 
 .error {
   color: red;
-  margin-top: 20px;
-}
-
-.question-text {
-  font-size: 1.1em;
-  text-align: left;
-  padding: 10px;
-  margin-bottom: 35px;
-}
-.explanation {
-  margin-top: 10px;
-  padding: 10px;
-  text-align: left;
+  font-weight: bold;
 }
 </style>

@@ -1,29 +1,38 @@
-<!-- src/App.vue -->
 <template>
   <div id="app">
-    <h2>Cardiology Question Generator</h2>
-    <h4>(in development)</h4>
-    <br /><br />
-    <QuizApp />
+    <h1>Cardiology Question Generator</h1>
+    <p class="development-notice">(in development)</p>
+
+    <div class="nav-buttons">
+      <button @click="currentView = 'quiz'">Quiz Mode</button>
+      <button @click="currentView = 'generation'">
+        Question Generation Mode
+      </button>
+    </div>
+
+    <QuizApp v-if="currentView === 'quiz'" />
+    <QuestionGeneration v-if="currentView === 'generation'" />
   </div>
 </template>
 
 <script>
+import { ref } from 'vue';
 import QuizApp from './components/QuizApp.vue';
+import QuestionGeneration from './components/QuestionGenerator.vue';
 
 export default {
   name: 'App',
   components: {
-    QuizApp
+    QuizApp,
+    QuestionGeneration
+  },
+  data() {
+    return {
+      currentView: 'quiz' // default view
+    };
   }
 };
+import './assets/main.css';
 </script>
 
-<style>
-#app {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  color: black;
-  margin-top: 60px;
-}
-</style>
+<style></style>

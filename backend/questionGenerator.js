@@ -1,6 +1,8 @@
 const { ChatOpenAI } = require('@langchain/openai');
 const { ChatPromptTemplate } = require('@langchain/core/prompts');
 const { JsonOutputParser } = require('@langchain/core/output_parsers');
+const { fs } = require('fs');
+const { path } = require('path');
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -38,6 +40,7 @@ const generateQuestions = async (topic, numQuestions) => {
             correctAnswer: 'the index of the correct answer',
             explanation: 'an explanation of the correct answer',
             topic: 'the general topic of the question'
+            level: 'the difficulty level of the question [student, resident, fellow, attending]'
     
     
           -- Return only valid JSON, and do not include any other explanatory text. Return in an array of question of arrays Even if there is only one question, it should be in an array with one question array element`

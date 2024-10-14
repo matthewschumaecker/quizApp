@@ -1,0 +1,111 @@
+quiz-app,
+question-generation {
+  font-family: Arial, sans-serif;
+}
+
+.options-list {
+  list-style-type: none;
+  padding: 0;
+  text-align: left;
+}
+
+.options-list li {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.options-list li.selected {
+  background-color: #d3d3d3;
+}
+
+button {
+  margin-top: 20px;
+}
+
+/* make it so incorrect red and correct blue */
+.result {
+  font: 1.3em sans-serif;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.result.correct {
+  color: #2a0eb5; /* Blue for correct answers */
+}
+
+.result.incorrect {
+  color: #c92a3d; /* Red for incorrect answers */
+}
+
+.final-score {
+  margin-top: 30px;
+  font-size: 1.2em;
+}
+
+.loading {
+  margin-top: 20px;
+  font-size: 1.2em;
+}
+
+.error {
+  color: red;
+  margin-top: 20px;
+}
+
+.question-text {
+  font-size: 1.1em;
+  text-align: left;
+  padding: 10px;
+  margin-bottom: 35px;
+}
+.explanation {
+  margin-top: 10px;
+  padding: 10px;
+  text-align: left;
+}
+#app {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: #2c3e50;
+  margin: 20px auto;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.development-notice {
+  font-style: italic;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.nav-buttons {
+  margin-bottom: 20px;
+}
+
+button {
+  margin: 0 10px;
+  padding: 10px 15px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.5em;
+  }
+}
+pre {
+  text-align: left;
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-left: 3px solid #ccc;
+  margin: 20px 0;
+  overflow: auto;
+}
