@@ -29,12 +29,20 @@ router.get('/generateQuestion', async (req, res) => {
 
 // Submit question route
 router.post('/submitQuestion', async (req, res) => {
-  const db = req.app.locals.db; // Use the database from app locals
+  const db = req.app.locals.db;
+  if (!db) {
+    console.log('Database connection not available');
+    return res.status(500).json({ error: 'Database connection not available' });
+  }
   try {
     const question = req.body;
     const result = await db.collection('questions').insertOne(question);
+    console.log(
+      'Question submitted successfully to database:',
+      result.insertedId
+    );
     res.status(201).json({
-      message: 'Question submitted successfully',
+      message: 'Question submitted successfully to database.',
       id: result.insertedId
     });
   } catch (error) {

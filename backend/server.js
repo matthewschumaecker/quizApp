@@ -15,13 +15,14 @@ const PORT = process.env.PORT || 3000;
 const MONGODB_URL = process.env.MONGODB_URL;
 const client = new MongoClient(MONGODB_URL);
 
-let db; //MongoDB operator that can access variables defined outside of its expression block
+// let db; //MongoDB operator that can access variables defined outside of its expression block
 
 async function connectToDatabase() {
   try {
     await client.connect();
     console.log('Connected successfully to MongoDB');
     db = client.db('question-generator');
+    app.locals.db = db;
   } catch (error) {
     console.error('Could not connect to MongoDB', error);
     process.exit(1);
