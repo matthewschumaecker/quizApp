@@ -104,7 +104,7 @@ export default {
   name: 'QuizApp',
   setup() {
     const topic = ref('');
-    const numQuestions = ref(5);
+    const numQuestions = ref(1);
     const questions = ref([]);
     const currentQuestionIndex = ref(0);
     const selectedOption = ref(null);
