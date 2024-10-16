@@ -6,10 +6,7 @@ const path = require('path');
 
 const genCardPrompt = fs.readFileSync('./prompts/genCard.txt', 'utf8');
 
-console.log(genCardPrompt);
-
 const dotenv = require('dotenv');
-const { log } = require('console');
 dotenv.config();
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -34,7 +31,7 @@ const generateQuestions = async (topic, numQuestions) => {
   try {
     const chain = prompt.pipe(llm).pipe(parser);
     const response = await chain.invoke({ topic, numQuestions });
-    console.log('Generated quiz question(s):', response);
+    // console.log('Generated quiz question(s):', response);
     console.log(
       `Successfully generated ${numQuestions} quiz question(s) about ${topic}...`
     );

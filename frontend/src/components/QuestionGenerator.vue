@@ -1,19 +1,30 @@
 <template>
-  <div class="question-generation container mt-5">
-    <h2 class="mb-4 text-center">Question Generation</h2>
-
-    <div class="mb-3">
-      <label for="topic" class="form-label">Enter Topic:</label>
-      <input id="topic" v-model="topic" class="form-control" />
+  <br />
+  <div class="question-generation container">
+    <h2 class="text-center">Question Generation Mode</h2>
+    <div class="d-flex justify-content-center">
+      <div class="form-group">
+        <label for="topic" class="mt-3 form-label">Enter Topic:</label>
+        <input
+          id="topic"
+          v-model="topic"
+          class="form-control"
+          style="width: 400px"
+          @keyup.enter="generateNewQuestion"
+        />
+      </div>
     </div>
 
-    <button
-      @click="generateNewQuestion"
-      :disabled="loading || !topic"
-      class="btn btn-primary mb-4"
-    >
-      Generate New Question
-    </button>
+    <div class="d-flex justify-content-center mt-3">
+      <button
+        @click="generateNewQuestion"
+        :disabled="loading || !topic"
+        class="btn btn-primary"
+        style="width: 200px; margin: 20px"
+      >
+        Generate New Question
+      </button>
+    </div>
 
     <div v-if="currentQuestion" class="card mb-4">
       <div class="card-body">
@@ -47,7 +58,7 @@
         placeholder="Instructions to reformulate question..."
       ></textarea>
       <div class="d-grid gap-2 d-md-block">
-        <button @click="requestChanges" class="btn btn-secondary me-md-2">
+        <button @click="requestChanges" class="btn btn-warning me-md-2">
           Request Changes
         </button>
         <button @click="submitToDatabase" class="btn btn-success">
@@ -71,9 +82,6 @@
         class="form-control mb-3"
       ></textarea>
       <div class="d-grid gap-2 d-md-block">
-        <button @click="updateQuestionFromJson" class="btn btn-info me-md-2">
-          Update Question
-        </button>
         <button @click="submitJsonToDatabase" class="btn btn-success">
           Submit JSON to Database
         </button>
@@ -134,21 +142,21 @@ export default {
         loading.value = false;
       }
     };
-
     const requestChanges = async () => {
-      if (!currentQuestion.value) return;
+      if (!currentQuestion.value || !feedback.value) return;
       try {
         loading.value = true;
         error.value = null;
-        const response = await axios.post(
-          'http://localhost:3000/api/modifyQuestion',
+
+        const response = await axios.get(
+          'http://localhost:3000/api/refineQuestion',
           {
-            question: currentQuestion.value,
             feedback: feedback.value
           }
         );
+
         currentQuestion.value = response.data;
-        editableJson.value = '';
+        editableJson.value = JSON.stringify([response.data], null, 2);
         feedback.value = '';
       } catch (err) {
         error.value = 'Failed to modify question';

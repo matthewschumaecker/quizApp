@@ -1,41 +1,53 @@
 <template>
-  <div class="quiz-app container mt-5">
-    <h2 class="mb-4">Quiz App</h2>
+  <div class="quiz-app container">
+    <br />
+    <h2 class="text-center">Quiz Mode</h2>
+    <br />
 
-    <div class="row g-3 mb-4">
-      <div class="col-md-6">
-        <label for="topic" class="form-label">Topic:</label>
-        <input
-          id="topic"
-          v-model="topic"
-          class="form-control w-50"
-          placeholder="Enter quiz topic"
-        />
-      </div>
-      <div class="col-md-6">
-        <label for="numQuestions" class="form-label"
-          >Number of Questions:</label
-        >
-        <input
-          id="numQuestions"
-          v-model.number="numQuestions"
-          type="number"
-          min="1"
-          max="10"
-          class="form-control w-25"
-        />
-      </div>
-      <div class="col-12">
-        <button
-          @click="startQuiz"
-          :disabled="!topic || numQuestions < 1"
-          class="btn btn-primary"
-        >
-          Start Quiz
-        </button>
+    <div class="container">
+      <div class="d-flex justify-content-center">
+        <div class="form-group me-5">
+          <label for="topic" class="form-label">Topic:</label>
+          <input
+            id="topic"
+            v-model="topic"
+            class="form-control"
+            style="width: 200px"
+            placeholder="Enter quiz topic"
+            @keyup.enter="startQuiz"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="numQuestions" class="form-label"
+            >Number of Questions:</label
+          >
+          <input
+            id="numQuestions"
+            v-model.number="numQuestions"
+            type="number"
+            min="1"
+            value="1"
+            class="form-control"
+            style="width: 100px"
+            @keyup-enter="startQuiz"
+          />
+        </div>
       </div>
     </div>
 
+    <div class="row justify-content-center">
+      <button
+        @click="startQuiz"
+        :disabled="!topic || numQuestions < 1"
+        class="btn btn-primary"
+        style="width: 150px; margin: 20px"
+      >
+        Start Quiz
+      </button>
+    </div>
+
+    <br /><br /><br />
     <div v-if="currentQuestion" class="card mb-4">
       <div class="card-body">
         <h5 class="card-title">{{ currentQuestion.text }}</h5>
@@ -53,7 +65,7 @@
         <button
           @click="submitAnswer"
           :disabled="selectedOption === null"
-          class="btn btn-success"
+          class="btn btn-dark"
         >
           Submit Answer
         </button>
@@ -73,7 +85,7 @@
       Next Question
     </button>
 
-    <p v-if="isLastQuestion && showResult" class="alert alert-info">
+    <p v-if="isLastQuestion && showResult" class="alert alert-secondary">
       Your final score is: {{ score }}/{{ questions.length }}
     </p>
 
@@ -182,3 +194,12 @@ export default {
   }
 };
 </script>
+
+<style>
+.box {
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  margin: 20px;
+}
+</style>
