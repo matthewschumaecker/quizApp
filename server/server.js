@@ -41,6 +41,7 @@ async function startServer() {
 
     app.use('/api', questionRoutes);
     // Catch-all route for SPA (Vue router)
+
     app.get('*', (req, res) => {
       res.sendFile(path.join(__dirname, '../client/dist/index.html'));
     });

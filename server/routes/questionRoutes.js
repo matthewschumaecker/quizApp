@@ -26,7 +26,10 @@ router.get('/generateQuestion', async (req, res) => {
   //     console.log(`Most recent Question: ${JSON.stringify(mostRecentQuestion)}`);
   //   }
 });
-
+//test to see if backend is working
+router.get('/ping', (req, res) => {
+  res.json({ message: 'pong' });
+});
 // Submit question route
 router.post('/submitQuestion', async (req, res) => {
   const db = req.app.locals.db;
