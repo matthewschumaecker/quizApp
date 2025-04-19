@@ -71,12 +71,14 @@ async function gracefulShutdown(signal) {
     process.exit(1);
   }
 }
-// Serve static files from the Vue app
-app.use(express.static(path.join(__dirname, '../client')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// If using Vue Router in history mode:
+// API routes
+app.use('/api', questionRoutes);
+
+// Catch-all for Vue Router history mode
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/index.html'));
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 // Start the server
 startServer().catch(console.error);
