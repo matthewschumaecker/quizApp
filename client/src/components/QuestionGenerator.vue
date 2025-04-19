@@ -126,12 +126,8 @@ export default {
       try {
         loading.value = true;
         error.value = null;
-  const uri = `http://localhost:3000/api/generateQuestion?topic=${topic.value}&num_questions=1`;
+  const uri = `/api/generateQuestion?topic=${topic.value}&num_questions=1`;
         const response = await axios.get(uri);
-          // // 'http://localhost:3000/api/generateQuestion',
-          // {
-          //   params: { topic: topic.value, numQuestions: 1 }
-          // }
 
         currentQuestion.value = response.data[0];
         editableJson.value = JSON.stringify([response.data[0]], null, 2);
@@ -151,7 +147,7 @@ export default {
         error.value = null;
         console.log(feedback.value);
         const response = await axios.get(
-          'http://localhost:3000/api/refineQuestion',
+          '/api/refineQuestion',
           {
             params: { feedback: feedback.value }
           }
@@ -173,7 +169,7 @@ export default {
         loading.value = true;
         error.value = null;
         await axios.post(
-          'http://localhost:3000/api/submitQuestion',
+          '/api/submitQuestion',
           currentQuestion.value
         );
         currentQuestion.value = null;
@@ -211,7 +207,7 @@ export default {
           loading.value = true;
           error.value = null;
           await axios.post(
-            'http://localhost:3000/api/submitQuestion',
+            '/api/submitQuestion',
 
             parsedJson[0]
           );
