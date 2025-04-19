@@ -36,8 +36,14 @@ async function startServer() {
 
     const db = client.db('question-generator');
     app.locals.db = db; // Store db instance in app.locals for route access
+    // Serve static frontend
+    app.use(express.static(path.join(__dirname, '../client/dist')));
 
     app.use('/api', questionRoutes);
+    // Catch-all route for SPA (Vue router)
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+    });
 
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
@@ -71,14 +77,6 @@ async function gracefulShutdown(signal) {
     process.exit(1);
   }
 }
-app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// API routes
-app.use('/api', questionRoutes);
-
-// Catch-all for Vue Router history mode
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
 // Start the server
 startServer().catch(console.error);
