@@ -137,7 +137,7 @@ export default {
         loading.value = true;
         error.value = null;
         const response = await axios.get(
-          'http://localhost:3000/api/generateQuestion',
+          '/api/generateQuestion',
           {
             params: { topic: topic.value, numQuestions: numQuestions.value }
           }
