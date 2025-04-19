@@ -5,6 +5,7 @@ const cors = require('cors');
 const { MongoClient } = require('mongodb');
 const questionRoutes = require('./routes/questionRoutes');
 const dotenv = require('dotenv');
+const path = require('path');
 dotenv.config();
 
 const app = express();
@@ -70,6 +71,12 @@ async function gracefulShutdown(signal) {
     process.exit(1);
   }
 }
+// Serve static files from the Vue app
+app.use(express.static(path.join(__dirname, '../client')));
 
+// If using Vue Router in history mode:
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/index.html'));
+});
 // Start the server
 startServer().catch(console.error);
